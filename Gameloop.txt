@@ -1,0 +1,11 @@
+Server initialize
+Client initialize
+Client kobler til server 
+ - Client får tilbake melding: waiting
+Client 2 kobler til server
+
+Server -> Begge clients: be client printe rubrikk
+Server -> Client 1&2: Velg champ
+Første client -> Server: jeg har valgt lag 
+Server -> første client: venter på andre client
+Server -> Begge clients: Matchen og score
