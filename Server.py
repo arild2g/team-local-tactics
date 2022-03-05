@@ -1,8 +1,6 @@
 from multiprocessing import connection
 import socket
 
-from DatabaseService import DatabaseService
-
 class Server:
     SOCKET = socket.socket()
     connections = []
