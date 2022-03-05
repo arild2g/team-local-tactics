@@ -1,6 +1,8 @@
 from multiprocessing import connection
 import socket
 
+from DatabaseService import DatabaseService
+
 class Server:
     SOCKET = socket.socket()
     connections = []
@@ -51,6 +53,8 @@ class Server:
     
 
 if __name__ == "__main__":
+    
     PORT = 6966
-
+    
     client = Server(PORT)
+    
