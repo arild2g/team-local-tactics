@@ -37,8 +37,19 @@ class Server:
     # Gameloop
     def gameLoop(self):
         while True:
-            pass
-            #TODO Create gameloop on server
+            self.sendToAllClients("STARTGAME")
+            champDict = {}
+            
+            while True:
+                for con in self.connections:
+                    champ = con.recv(1024).decode()
+                    if not champ:
+                        continue
+                    champDict[con] = champ
+                if len(champDict.keys) == 4:
+                    break
+            
+            
 
         self.shutdown()
 
