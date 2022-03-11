@@ -1,5 +1,6 @@
 from multiprocessing import connection
 import socket
+from core import Match, Team, Champion
 
 class Server:
     SOCKET = socket.socket()
@@ -35,17 +36,23 @@ class Server:
     # Gameloop
     def gameLoop(self):
         while True:
-            self.sendToAllClients("STARTGAME")
-            champDict = {}
-            
+            self.sendToAllClients("CHOOSECHAMPION")
+            champDict: dict[Team]
+
             while True:
                 for con in self.connections:
                     champ = con.recv(1024).decode()
                     if not champ:
                         continue
-                    champDict[con] = champ
+                    champDict[con].append(Champion)
+                    print(f"Connection: {con}, chose champion: {champ}")
+
                 if len(champDict.keys) == 4:
                     break
+
+            match = Match (
+                Team()
+            )
             
             
 

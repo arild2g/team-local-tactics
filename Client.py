@@ -19,8 +19,8 @@ class Client:
             match msg.split()[0]:
                 case "MESSAGE":
                     print(" ".join(msg.split()[1:]))
-                case "STARTGAME":
-                    print("Recieved STARTGAME command.")
+                case "CHOOSECHAMPION":
+                    print("Recieved CHOOSECHAMPION command.")
                     #TODO Print and choose a champion send back to server
                 case "MATCHRESULT":
                     print("Recieved Match Result")
