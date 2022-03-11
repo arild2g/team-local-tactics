@@ -5,6 +5,7 @@ A game for the mandatory assignment
 ### Mathias Vehus & Arild Grimstveit
 
 ## Execution order
+- Run DatabaseServer.py
 - Run Server.py
 - Run two separate instances of Client.py
 
