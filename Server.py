@@ -1,16 +1,20 @@
+from copyreg import pickle
 from multiprocessing import connection
 import socket
+import pickle
+from DatabaseService import selectAllChamps, createConnection
 from core import Match, Team, Champion
 
 class Server:
-    SOCKET = socket.socket()
-    connections = []
 
     def __init__(self, PORT) -> None:    
+        self.DBconn = createConnection("Champions")
+        self.SOCKET = socket.socket()
+        self.connections = []
+        print("Connected to database")
         print("Socket created succsessfully")
         self.SOCKET.bind(("localhost", PORT))
         print(f"Socket binded to localhost with port {PORT}")
-
         self.SOCKET.listen()
         print("Waiting for connections...")
         self.connectionLoop()
@@ -36,7 +40,8 @@ class Server:
     # Gameloop
     def gameLoop(self):
         while True:
-            self.sendToAllClients("CHOOSECHAMPION")
+            self.sendToAllClients(pickle.dumps(selectAllChamps(self.DBconn)))
+            self.sendToAllClients(pickle.dumps("CHOOSECHAMPION"))
             champDict: dict[Team]
 
             while True:
@@ -54,13 +59,11 @@ class Server:
                 Team()
             )
             
-            
-
         self.shutdown()
 
     def sendToAllClients(self, msg):
         for con in self.connections:
-            con.send(msg.encode())
+            con.send(msg)
             print(f"Sent message: {msg} to connection: {con.getsockname()}")
 
     def shutdown(self):

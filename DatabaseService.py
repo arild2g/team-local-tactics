@@ -35,3 +35,6 @@ def selectAllChamps(conn):
     return champDict
 
 
+if __name__ == "__main__":
+    conn = createConnection("Champions")
+    print(selectAllChamps(conn))
