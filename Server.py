@@ -12,9 +12,6 @@ class Server:
         self.player1 = []
         self.player2 = []
 
-        self.DBconn = createConnection("TNTDatabase")
-        print("Connected to database")
-
         self.SOCKET = socket.socket()
         print("Socket created successfully")
 
@@ -23,6 +20,13 @@ class Server:
 
         self.SOCKET.listen()
         print("Waiting for connections...")
+
+        self.DBSocket = socket.socket()
+        self.DBSocket.connect(("localhost", 6960))
+        data = self.DBSocket.recv(4098)
+        data = pickle.loads(data)
+        self.champDict = data
+        print("Recieved champions from database")
 
         self.connectionLoop()
 
@@ -46,8 +50,7 @@ class Server:
         while True:
 
             #Display available champions from database
-            champDict = selectAllChamps(self.DBconn)
-            self.sendToAllClients(champDict)
+            self.sendToAllClients(self.champDict)
 
             #Ask each player to choose champions for their teams
             for _ in range(2):
@@ -59,8 +62,8 @@ class Server:
 
             #Create a new match with chosen teams
             match = Match(
-                Team([champDict[champ] for champ in self.player1]),
-                Team([champDict[champ] for champ in self.player2])
+                Team([self.champDict[champ] for champ in self.player1]),
+                Team([self.champDict[champ] for champ in self.player2])
             )
 
             #Simulate a match of Team Network Tactics
@@ -70,7 +73,7 @@ class Server:
             self.sendToAllClients(match)
             
             #Store match history in database
-            saveMatchToDatabase(self.DBconn, match)
+            self.DBSocket.send(pickle.dumps(match))
 
             break
         self.shutdown()
@@ -110,6 +113,7 @@ class Server:
 
     def shutdown(self):
         self.SOCKET.close()
+        self.DBSocket.close()
         print("Server shutting down")
 
 if __name__ == "__main__":
