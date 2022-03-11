@@ -1,8 +1,8 @@
 import socket
 import pickle
 from threading import local
-from core import Champion
-from team_local_tactics import print_available_champs, print_match_summary
+from core import Champion, Match
+from team_local_tactics import print_available_champs, print_match_summary, input_champion
 
 class Client:
 
@@ -13,45 +13,32 @@ class Client:
         self.gameLoop()
 
     def gameLoop(self):
-        print('Starting game loop')
         while True:
-            data = self.SOCKET.recv(2048)
+            
+            data = self.SOCKET.recv(4098)
 
-            if data is None:
+            if not data:
                 continue
 
-            data_arr = pickle.loads(data)
+            data = pickle.loads(data)
 
-            print(data_arr)
+            if type(data) is dict:
+                champs = data
+                print_available_champs(champs)
+            elif type(data) is tuple:
+                chosenChamp = input_champion(f"Player {data[0]}", data[1], champs, data[2], data[3])
+                self.SOCKET.send(pickle.dumps(chosenChamp))
+            elif type(data) is list:
+                print(f"Player 1 team: {data[0]} | Player 2 team: {data[1]}")
+            elif type(data) is Match:
+                print_match_summary(data)
+                break
+
 
     def shutdown(self):
         self.SOCKET.close()
         print("Closed connection to server.")
 
 if __name__ == "__main__":
-    PORT = 6966
+    PORT = 6961
     client = Client(PORT)
-
-"""
-
-            if type(champs) is dict[Champion]:
-                print_available_champs(champs)
-                continue
-
-            data.decode()
-
-            match data.split()[0]:
-                case "MESSAGE":
-                    print(" ".join(data.split()[1:]))
-                case "CHOOSECHAMPION":
-                    print("Recieved CHOOSECHAMPION command.")
-                    #TODO Print and choose a champion send back to server
-                case "MATCHRESULT":
-                    print("Recieved Match Result")
-                    #TODO Do print matchresult
-                    self.shutdown()
-                    break
-                case _ :
-                    continue
-"""
-

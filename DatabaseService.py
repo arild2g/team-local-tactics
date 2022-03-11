@@ -1,14 +1,8 @@
 import sqlite3
 from sqlite3 import Error
-
-from core import Champion
+from core import Champion, Match
 
 def createConnection(database):
-    """ create a database connection to the SQLite database
-        specified by the db_file
-    :param db_file: database file
-    :return: Connection object or None
-    """
     conn = None
     try:
         conn = sqlite3.connect(database)
@@ -17,15 +11,9 @@ def createConnection(database):
 
     return conn
 
-
 def selectAllChamps(conn):
-    """
-    Query all rows in the tasks table
-    :param conn: the Connection object
-    :return:
-    """
     cur = conn.cursor()
-    cur.execute("SELECT * FROM Champions")
+    cur.execute("select * from Champions")
     rows = cur.fetchall()
     
     champDict = {}
@@ -34,7 +22,7 @@ def selectAllChamps(conn):
 
     return champDict
 
-
-if __name__ == "__main__":
-    conn = createConnection("Champions")
-    print(selectAllChamps(conn))
+def saveMatchToDatabase(conn, match: Match):
+    cur = conn.cursor()
+    cur.execute(f"insert into Match values({match.score[0]},{match.score[1]});")
+    conn.commit()

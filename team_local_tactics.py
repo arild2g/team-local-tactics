@@ -42,8 +42,7 @@ def input_champion(prompt: str,
             case name if name in player2:
                 print(f'{name} is in the enemy team. Try again.')
             case _:
-                player1.append(name)
-                break
+                return name 
 
 
 def print_match_summary(match: Match) -> None:
